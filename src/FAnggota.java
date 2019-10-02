@@ -107,6 +107,7 @@ public class FAnggota extends javax.swing.JFrame {
         BHapus = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         TAnggota = new javax.swing.JTable();
+        BUpdate = new javax.swing.JButton();
 
         jTextField1.setText("jTextField1");
 
@@ -178,15 +179,25 @@ public class FAnggota extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(TAnggota);
 
+        BUpdate.setText("Update");
+        BUpdate.setEnabled(false);
+        BUpdate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BUpdateActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(89, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(layout.createSequentialGroup()
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                 .addComponent(jLabel3)
@@ -199,15 +210,17 @@ public class FAnggota extends javax.swing.JFrame {
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                             .addComponent(BTambah)
-                            .addGap(18, 18, 18)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                             .addComponent(BSimpan)
-                            .addGap(33, 33, 33)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(BUpdate)
+                            .addGap(14, 14, 14)
                             .addComponent(BEdit)
                             .addGap(18, 18, 18)
                             .addComponent(BBatal)
-                            .addGap(31, 31, 31)
-                            .addComponent(BHapus))))
-                .addContainerGap(47, Short.MAX_VALUE))
+                            .addGap(18, 18, 18)
+                            .addComponent(BHapus)
+                            .addContainerGap()))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -225,12 +238,14 @@ public class FAnggota extends javax.swing.JFrame {
                     .addComponent(jLabel3)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(BTambah)
-                    .addComponent(BEdit)
-                    .addComponent(BBatal)
-                    .addComponent(BHapus)
-                    .addComponent(BSimpan))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(BHapus)
+                        .addComponent(BBatal)
+                        .addComponent(BEdit)
+                        .addComponent(BUpdate)
+                        .addComponent(BSimpan)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -278,6 +293,11 @@ public class FAnggota extends javax.swing.JFrame {
         BSimpan.setEnabled(false);
         BTambah.setEnabled(true);
     }//GEN-LAST:event_BBatalActionPerformed
+
+    private void BUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BUpdateActionPerformed
+        // TODO add your handling code here:
+        updateData();
+    }//GEN-LAST:event_BUpdateActionPerformed
     
     private void hapusData(){
         String id = JOptionPane.showInputDialog("Masukan No Anggota Untuk Menghapus : ");
@@ -308,8 +328,77 @@ public class FAnggota extends javax.swing.JFrame {
     
     private void editData() {
 //        JOptionPane.showInputDialog()
-           String inputan = JOptionPane.showInputDialog("Inputkan Sesuatu");
-           JOptionPane.showMessageDialog(this, "Kamu meng-inputkan: " + inputan);
+           String inputan = JOptionPane.showInputDialog("Masukan Kode Anggota yang akan di edit : ");
+           try{   
+              // Membuat perintah sql 
+       String sql="SELECT * FROM Anggota WHERE NoAnggota=?";
+       PreparedStatement st=conn.prepareStatement(sql);
+                st.setString(1, inputan);
+                
+             ResultSet rs=st.executeQuery();
+
+               while(rs.next()) {
+                   
+                   txtNoAnggota.setText(rs.getString("NoAnggota"));
+                   txtNama.setText(rs.getString("Nama"));
+                   txtAlamat.setText(rs.getString("Alamat"));
+                   
+                   txtNoAnggota.setEditable(true);
+                   txtNama.setEditable(true);
+                   txtAlamat.setEditable(true);
+                   BUpdate.setEnabled(true);
+                   BEdit.setEnabled(false);
+                   BBatal.setEnabled(true);
+                   BTambah.setEnabled(false);
+                   BHapus.setEnabled(false);
+               }
+    }
+    catch (SQLException sqle) {                  
+           System.out.println("Proses Query Gagal = " + sqle);
+           System.exit(0);
+    }
+    catch(Exception e){
+           System.out.println("Koneksi Access Gagal " +e.getMessage());
+           System.exit(0);
+    }
+    }
+    
+    private void updateData() {
+        try{   
+              // Membuat perintah sql 
+       String sql="UPDATE Anggota Set  Nama=?, Alamat=? WHERE NoAnggota=?";
+       PreparedStatement st=conn.prepareStatement(sql);
+                st.setString(1, txtNama.getText());
+                st.setString(2, txtAlamat.getText());
+                st.setString(3, txtNoAnggota.getText());
+
+
+            int rs=st.executeUpdate();
+
+            if(rs>0){
+            JOptionPane.showMessageDialog(this,"Berhasil Mengupdate data Dengan NoAnggota ");
+            BUpdate.setEnabled(false);
+            BBatal.setEnabled(false);
+            BTambah.setEnabled(true);
+            txtAlamat.setText("");
+            txtNama.setText("");
+            txtNoAnggota.setText("");
+            
+            txtNoAnggota.setEditable(false);
+                   txtNama.setEditable(false);
+                   txtAlamat.setEditable(false);
+      	    setJTable();
+           }
+       
+    }
+    catch (SQLException sqle) {                  
+           System.out.println("Proses Query Gagal = " + sqle);
+           System.exit(0);
+    }
+    catch(Exception e){
+           System.out.println("Koneksi Access Gagal " +e.getMessage());
+           System.exit(0);
+    }
     }
     
     private void editAbleTrue() {
@@ -384,6 +473,7 @@ public class FAnggota extends javax.swing.JFrame {
     private javax.swing.JButton BHapus;
     private javax.swing.JButton BSimpan;
     private javax.swing.JButton BTambah;
+    private javax.swing.JButton BUpdate;
     private javax.swing.JTable TAnggota;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
