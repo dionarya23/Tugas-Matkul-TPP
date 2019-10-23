@@ -379,6 +379,8 @@ public class FAnggota extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this,"Berhasil Mengupdate data Dengan NoAnggota ");
             BUpdate.setEnabled(false);
             BBatal.setEnabled(false);
+            BEdit.setEnabled(true);
+            BHapus.setEnabled(true);
             BTambah.setEnabled(true);
             txtAlamat.setText("");
             txtNama.setText("");

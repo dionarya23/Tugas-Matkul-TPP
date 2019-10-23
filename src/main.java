@@ -16,7 +16,9 @@ public class main {
     public static void main(String[] args) {
         // TODO code application logic here
         FAnggota anggota = new FAnggota();
+        FBuku buku = new FBuku();
         anggota.setVisible(true);
+        buku.setVisible(true);
     }
     
 }
